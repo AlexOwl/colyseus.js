@@ -1,5 +1,4 @@
 import NodeWebSocket from "ws";
-import { ClientRequestArgs } from "http";
 import { ITransport, ITransportEventMap } from "./ITransport";
 
 const WebSocket = globalThis.WebSocket || NodeWebSocket;
@@ -7,7 +6,6 @@ const WebSocket = globalThis.WebSocket || NodeWebSocket;
 export class WebSocketTransport implements ITransport {
     ws: WebSocket | NodeWebSocket;
     protocols?: string | string[];
-    static readonly defaultOptions: { [key: string]: NodeWebSocket.ClientOptions | ClientRequestArgs } = {}
 
     constructor(public events: ITransportEventMap) {}
 
@@ -21,7 +19,7 @@ export class WebSocketTransport implements ITransport {
     }
 
     public connect(url: string) {
-        this.ws = new WebSocket(url, this.protocols, WebSocketTransport.defaultOptions);
+        this.ws = new WebSocket(url, this.protocols);
         this.ws.binaryType = 'arraybuffer';
         this.ws.onopen = this.events.onopen;
         this.ws.onmessage = this.events.onmessage;

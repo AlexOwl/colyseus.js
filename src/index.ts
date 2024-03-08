@@ -5,10 +5,6 @@ export { Protocol, ErrorCode } from './Protocol';
 export { Room, RoomAvailable } from './Room';
 export { Auth, type AuthSettings, type PopupSettings } from "./Auth";
 
-// Hack
-export { Connection } from "./Connection";
-export { WebSocketTransport } from "./transport/WebSocketTransport";
-
 /*
  * Serializers
  */
