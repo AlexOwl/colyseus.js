@@ -806,7 +806,7 @@
             }
         };
         WebSocketTransport.prototype.connect = function (url) {
-            this.ws = new WebSocket(url, this.protocols || [], this.httpOptions);
+            this.ws = new WebSocket(url, /*this.protocols || [],*/ this.httpOptions);
             this.ws.binaryType = 'arraybuffer';
             this.ws.onopen = this.events.onopen;
             this.ws.onmessage = this.events.onmessage;
