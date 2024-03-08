@@ -14,6 +14,7 @@ class Room {
     reconnectionToken;
     name;
     connection;
+    httpOptions = {};
     // Public signals
     onStateChange = createSignal();
     onError = createSignal();
@@ -41,6 +42,7 @@ class Room {
     connect(endpoint, devModeCloseCallback, room = this // when reconnecting on devMode, re-use previous room intance for handling events.
     ) {
         const connection = new Connection();
+        connection.httpOptions = this.httpOptions;
         room.connection = connection;
         connection.events.onmessage = Room.prototype.onMessageCallback.bind(room);
         connection.events.onclose = function (e) {

@@ -1,12 +1,12 @@
 // colyseus.js@0.15.18
 import NodeWebSocket from 'ws';
 
-const WebSocket = globalThis.WebSocket || NodeWebSocket;
+const WebSocket = NodeWebSocket;
 class WebSocketTransport {
     events;
     ws;
     protocols;
-    static defaultOptions = {};
+    httpOptions = {};
     constructor(events) {
         this.events = events;
     }
@@ -19,7 +19,7 @@ class WebSocketTransport {
         }
     }
     connect(url) {
-        this.ws = new WebSocket(url, this.protocols, WebSocketTransport.defaultOptions);
+        this.ws = new WebSocket(url, this.protocols || [], this.httpOptions);
         this.ws.binaryType = 'arraybuffer';
         this.ws.onopen = this.events.onopen;
         this.ws.onmessage = this.events.onmessage;

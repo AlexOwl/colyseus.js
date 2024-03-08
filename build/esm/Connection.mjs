@@ -4,8 +4,11 @@ import { WebSocketTransport } from './transport/WebSocketTransport.mjs';
 class Connection {
     transport;
     events = {};
+    httpOptions = {};
     constructor() {
-        this.transport = new WebSocketTransport(this.events);
+        const webSocketTransport = new WebSocketTransport(this.events);
+        webSocketTransport.httpOptions = this.httpOptions;
+        this.transport = webSocketTransport;
     }
     send(data) {
         this.transport.send(data);

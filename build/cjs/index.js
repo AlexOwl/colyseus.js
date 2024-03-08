@@ -8,8 +8,6 @@ var Client = require('./Client.js');
 var Protocol = require('./Protocol.js');
 var Room = require('./Room.js');
 var Auth = require('./Auth.js');
-var Connection = require('./Connection.js');
-var WebSocketTransport = require('./transport/WebSocketTransport.js');
 var SchemaSerializer = require('./serializer/SchemaSerializer.js');
 var NoneSerializer = require('./serializer/NoneSerializer.js');
 var Serializer = require('./serializer/Serializer.js');
@@ -28,8 +26,6 @@ Object.defineProperty(exports, 'Protocol', {
 });
 exports.Room = Room.Room;
 exports.Auth = Auth.Auth;
-exports.Connection = Connection.Connection;
-exports.WebSocketTransport = WebSocketTransport.WebSocketTransport;
 exports.SchemaSerializer = SchemaSerializer.SchemaSerializer;
 exports.registerSerializer = Serializer.registerSerializer;
 //# sourceMappingURL=index.js.map

@@ -1,13 +1,17 @@
+import { ClientRequestArgs } from "http";
+
 import NodeWebSocket from "ws";
 import { ITransport, ITransportEventMap } from "./ITransport";
 
-const WebSocket = globalThis.WebSocket || NodeWebSocket;
+const WebSocket = NodeWebSocket;
 
 export class WebSocketTransport implements ITransport {
     ws: WebSocket | NodeWebSocket;
     protocols?: string | string[];
 
-    constructor(public events: ITransportEventMap) {}
+    public httpOptions: ClientRequestArgs = {}
+
+    constructor(public events: ITransportEventMap) { }
 
     public send(data: ArrayBuffer | Array<number>): void {
         if (data instanceof ArrayBuffer) {
@@ -19,7 +23,7 @@ export class WebSocketTransport implements ITransport {
     }
 
     public connect(url: string) {
-        this.ws = new WebSocket(url, this.protocols);
+        this.ws = new WebSocket(url, this.protocols || [], this.httpOptions);
         this.ws.binaryType = 'arraybuffer';
         this.ws.onopen = this.events.onopen;
         this.ws.onmessage = this.events.onmessage;

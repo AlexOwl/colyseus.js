@@ -9,10 +9,11 @@ function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'defau
 
 var NodeWebSocket__default = /*#__PURE__*/_interopDefaultLegacy(NodeWebSocket);
 
-var WebSocket = globalThis.WebSocket || NodeWebSocket__default["default"];
+var WebSocket = NodeWebSocket__default["default"];
 var WebSocketTransport = /** @class */ (function () {
     function WebSocketTransport(events) {
         this.events = events;
+        this.httpOptions = {};
     }
     WebSocketTransport.prototype.send = function (data) {
         if (data instanceof ArrayBuffer) {
@@ -23,7 +24,7 @@ var WebSocketTransport = /** @class */ (function () {
         }
     };
     WebSocketTransport.prototype.connect = function (url) {
-        this.ws = new WebSocket(url, this.protocols, WebSocketTransport.defaultOptions);
+        this.ws = new WebSocket(url, this.protocols || [], this.httpOptions);
         this.ws.binaryType = 'arraybuffer';
         this.ws.onopen = this.events.onopen;
         this.ws.onmessage = this.events.onmessage;
@@ -40,7 +41,6 @@ var WebSocketTransport = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
-    WebSocketTransport.defaultOptions = {};
     return WebSocketTransport;
 }());
 

@@ -1,7 +1,10 @@
+/// <reference types="node" />
+import { ClientRequestArgs } from "http";
 import { ITransport, ITransportEventMap } from "./transport/ITransport";
 export declare class Connection implements ITransport {
     transport: ITransport;
     events: ITransportEventMap;
+    httpOptions: ClientRequestArgs;
     constructor();
     send(data: ArrayBuffer | Array<number>): void;
     connect(url: string): void;

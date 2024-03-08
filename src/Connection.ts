@@ -1,3 +1,5 @@
+import { ClientRequestArgs } from "http";
+
 import { ITransport, ITransportEventMap } from "./transport/ITransport";
 import { WebSocketTransport } from "./transport/WebSocketTransport";
 
@@ -5,8 +7,12 @@ export class Connection implements ITransport {
     transport: ITransport;
     events: ITransportEventMap = {};
 
+    public httpOptions: ClientRequestArgs = {}
+
     constructor() {
-        this.transport = new WebSocketTransport(this.events);
+        const webSocketTransport = new WebSocketTransport(this.events);
+        webSocketTransport.httpOptions = this.httpOptions;
+        this.transport = webSocketTransport;
     }
 
     send(data: ArrayBuffer | Array<number>): void {

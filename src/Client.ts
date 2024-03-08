@@ -1,3 +1,5 @@
+import { ClientRequestArgs } from "http";
+
 import { ServerError } from './errors/ServerError';
 import { Room, RoomAvailable } from './Room';
 import { SchemaConstructor } from './serializer/SchemaSerializer';
@@ -17,7 +19,7 @@ export class MatchMakeError extends Error {
 
 // - React Native does not provide `window.location`
 // - Cocos Creator (Native) does not provide `window.location.hostname`
-const DEFAULT_ENDPOINT = (typeof (window) !== "undefined" &&  typeof (window?.location?.hostname) !== "undefined")
+const DEFAULT_ENDPOINT = (typeof (window) !== "undefined" && typeof (window?.location?.hostname) !== "undefined")
     ? `${window.location.protocol.replace("http", "ws")}//${window.location.hostname}${(window.location.port && `:${window.location.port}`)}`
     : "ws://127.0.0.1:2567";
 
@@ -31,6 +33,8 @@ export interface EndpointSettings {
 export class Client {
     public http: HTTP;
     public auth: Auth;
+
+    public httpOptions: ClientRequestArgs = {}
 
     protected settings: EndpointSettings;
 
@@ -100,9 +104,9 @@ export class Client {
             throw new Error("DEPRECATED: .reconnect() now only accepts 'reconnectionToken' as argument.\nYou can get this token from previously connected `room.reconnectionToken`");
         }
         const [roomId, token] = reconnectionToken.split(":");
-		if (!roomId || !token) {
-			throw new Error("Invalid reconnection token format.\nThe format should be roomId:reconnectionToken");
-		}
+        if (!roomId || !token) {
+            throw new Error("Invalid reconnection token format.\nThe format should be roomId:reconnectionToken");
+        }
         return await this.createMatchMakeRequest<T>('reconnect', roomId, { reconnectionToken: token }, rootSchema);
     }
 
@@ -202,7 +206,9 @@ export class Client {
     }
 
     protected createRoom<T>(roomName: string, rootSchema?: SchemaConstructor<T>) {
-        return new Room<T>(roomName, rootSchema);
+        const room = new Room<T>(roomName, rootSchema);
+        room.httpOptions = this.httpOptions;
+        return room;
     }
 
     protected buildEndpoint(room: any, options: any = {}) {

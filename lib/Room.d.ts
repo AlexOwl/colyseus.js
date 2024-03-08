@@ -1,3 +1,5 @@
+/// <reference types="node" />
+import { ClientRequestArgs } from "http";
 import { Connection } from './Connection';
 import { Serializer } from './serializer/Serializer';
 import { Schema } from '@colyseus/schema';
@@ -15,6 +17,7 @@ export declare class Room<State = any> {
     reconnectionToken: string;
     name: string;
     connection: Connection;
+    httpOptions: ClientRequestArgs;
     onStateChange: {
         once: (cb: (state: State) => void) => void;
         remove: (cb: (state: State) => void) => void;

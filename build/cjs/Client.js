@@ -28,6 +28,7 @@ var DEFAULT_ENDPOINT = (typeof (window) !== "undefined" && typeof ((_a = window 
 var Client = /** @class */ (function () {
     function Client(settings) {
         if (settings === void 0) { settings = DEFAULT_ENDPOINT; }
+        this.httpOptions = {};
         if (typeof (settings) === "string") {
             //
             // endpoint by url
@@ -240,7 +241,9 @@ var Client = /** @class */ (function () {
         });
     };
     Client.prototype.createRoom = function (roomName, rootSchema) {
-        return new Room.Room(roomName, rootSchema);
+        var room = new Room.Room(roomName, rootSchema);
+        room.httpOptions = this.httpOptions;
+        return room;
     };
     Client.prototype.buildEndpoint = function (room, options) {
         if (options === void 0) { options = {}; }

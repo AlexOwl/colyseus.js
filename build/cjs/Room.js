@@ -15,6 +15,7 @@ var ServerError = require('./errors/ServerError.js');
 var Room = /** @class */ (function () {
     function Room(name, rootSchema) {
         var _this = this;
+        this.httpOptions = {};
         // Public signals
         this.onStateChange = signal.createSignal();
         this.onError = signal.createSignal();
@@ -42,6 +43,7 @@ var Room = /** @class */ (function () {
     ) {
         if (room === void 0) { room = this; }
         var connection = new Connection.Connection();
+        connection.httpOptions = this.httpOptions;
         room.connection = connection;
         connection.events.onmessage = Room.prototype.onMessageCallback.bind(room);
         connection.events.onclose = function (e) {

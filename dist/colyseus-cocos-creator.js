@@ -790,10 +790,11 @@
       );
     };
 
-    var WebSocket = globalThis.WebSocket || browser;
+    var WebSocket = browser;
     var WebSocketTransport = /** @class */ (function () {
         function WebSocketTransport(events) {
             this.events = events;
+            this.httpOptions = {};
         }
         WebSocketTransport.prototype.send = function (data) {
             if (data instanceof ArrayBuffer) {
@@ -804,7 +805,7 @@
             }
         };
         WebSocketTransport.prototype.connect = function (url) {
-            this.ws = new WebSocket(url, this.protocols, WebSocketTransport.defaultOptions);
+            this.ws = new WebSocket(url, this.protocols || [], this.httpOptions);
             this.ws.binaryType = 'arraybuffer';
             this.ws.onopen = this.events.onopen;
             this.ws.onmessage = this.events.onmessage;
@@ -821,14 +822,16 @@
             enumerable: false,
             configurable: true
         });
-        WebSocketTransport.defaultOptions = {};
         return WebSocketTransport;
     }());
 
     var Connection = /** @class */ (function () {
         function Connection() {
             this.events = {};
-            this.transport = new WebSocketTransport(this.events);
+            this.httpOptions = {};
+            var webSocketTransport = new WebSocketTransport(this.events);
+            webSocketTransport.httpOptions = this.httpOptions;
+            this.transport = webSocketTransport;
         }
         Connection.prototype.send = function (data) {
             this.transport.send(data);
@@ -4390,6 +4393,7 @@
     var Room = /** @class */ (function () {
         function Room(name, rootSchema) {
             var _this = this;
+            this.httpOptions = {};
             // Public signals
             this.onStateChange = createSignal();
             this.onError = createSignal();
@@ -4417,6 +4421,7 @@
         ) {
             if (room === void 0) { room = this; }
             var connection = new Connection();
+            connection.httpOptions = this.httpOptions;
             room.connection = connection;
             connection.events.onmessage = Room.prototype.onMessageCallback.bind(room);
             connection.events.onclose = function (e) {
@@ -5004,6 +5009,7 @@
     var Client = /** @class */ (function () {
         function Client(settings) {
             if (settings === void 0) { settings = DEFAULT_ENDPOINT; }
+            this.httpOptions = {};
             if (typeof (settings) === "string") {
                 //
                 // endpoint by url
@@ -5216,7 +5222,9 @@
             });
         };
         Client.prototype.createRoom = function (roomName, rootSchema) {
-            return new Room(roomName, rootSchema);
+            var room = new Room(roomName, rootSchema);
+            room.httpOptions = this.httpOptions;
+            return room;
         };
         Client.prototype.buildEndpoint = function (room, options) {
             if (options === void 0) { options = {}; }
@@ -5298,10 +5306,8 @@
 
     exports.Auth = Auth;
     exports.Client = Client;
-    exports.Connection = Connection;
     exports.Room = Room;
     exports.SchemaSerializer = SchemaSerializer;
-    exports.WebSocketTransport = WebSocketTransport;
     exports.registerSerializer = registerSerializer;
 
     Object.defineProperty(exports, '__esModule', { value: true });

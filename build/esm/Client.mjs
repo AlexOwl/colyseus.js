@@ -20,6 +20,7 @@ const DEFAULT_ENDPOINT = (typeof (window) !== "undefined" && typeof (window?.loc
 class Client {
     http;
     auth;
+    httpOptions = {};
     settings;
     constructor(settings = DEFAULT_ENDPOINT) {
         if (typeof (settings) === "string") {
@@ -152,7 +153,9 @@ class Client {
         return await this.consumeSeatReservation(response, rootSchema, reuseRoomInstance);
     }
     createRoom(roomName, rootSchema) {
-        return new Room(roomName, rootSchema);
+        const room = new Room(roomName, rootSchema);
+        room.httpOptions = this.httpOptions;
+        return room;
     }
     buildEndpoint(room, options = {}) {
         const params = [];

@@ -8,7 +8,10 @@ var WebSocketTransport = require('./transport/WebSocketTransport.js');
 var Connection = /** @class */ (function () {
     function Connection() {
         this.events = {};
-        this.transport = new WebSocketTransport.WebSocketTransport(this.events);
+        this.httpOptions = {};
+        var webSocketTransport = new WebSocketTransport.WebSocketTransport(this.events);
+        webSocketTransport.httpOptions = this.httpOptions;
+        this.transport = webSocketTransport;
     }
     Connection.prototype.send = function (data) {
         this.transport.send(data);

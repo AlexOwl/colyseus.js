@@ -4,8 +4,6 @@ export { Client } from './Client.mjs';
 export { ErrorCode, Protocol } from './Protocol.mjs';
 export { Room } from './Room.mjs';
 export { Auth } from './Auth.mjs';
-export { Connection } from './Connection.mjs';
-export { WebSocketTransport } from './transport/WebSocketTransport.mjs';
 import { SchemaSerializer } from './serializer/SchemaSerializer.mjs';
 export { SchemaSerializer } from './serializer/SchemaSerializer.mjs';
 import { NoneSerializer } from './serializer/NoneSerializer.mjs';

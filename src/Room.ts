@@ -1,3 +1,5 @@
+import { ClientRequestArgs } from "http";
+
 import * as msgpack from './msgpack';
 
 import { Connection } from './Connection';
@@ -21,13 +23,15 @@ export interface RoomAvailable<Metadata = any> {
     metadata?: Metadata;
 }
 
-export class Room<State= any> {
+export class Room<State = any> {
     public roomId: string;
     public sessionId: string;
     public reconnectionToken: string;
 
     public name: string;
     public connection: Connection;
+
+    public httpOptions: ClientRequestArgs = {}
 
     // Public signals
     public onStateChange = createSignal<(state: State) => void>();
@@ -68,6 +72,8 @@ export class Room<State= any> {
         room: Room = this // when reconnecting on devMode, re-use previous room intance for handling events.
     ) {
         const connection = new Connection();
+        connection.httpOptions = this.httpOptions;
+
         room.connection = connection;
 
         connection.events.onmessage = Room.prototype.onMessageCallback.bind(room);
@@ -131,7 +137,7 @@ export class Room<State= any> {
     public send(type: string | number, message?: any): void {
         const initialBytes: number[] = [Protocol.ROOM_DATA];
 
-        if (typeof(type) === "string") {
+        if (typeof (type) === "string") {
             encode.string(initialBytes, type);
 
         } else {
@@ -156,7 +162,7 @@ export class Room<State= any> {
     public sendBytes(type: string | number, bytes: number[] | ArrayBufferLike) {
         const initialBytes: number[] = [Protocol.ROOM_DATA_BYTES];
 
-        if (typeof(type) === "string") {
+        if (typeof (type) === "string") {
             encode.string(initialBytes, type);
 
         } else {
@@ -171,7 +177,7 @@ export class Room<State= any> {
         this.connection.send(arr.buffer);
     }
 
-    public get state (): State {
+    public get state(): State {
         return this.serializer.getState();
     }
 
@@ -292,14 +298,14 @@ export class Room<State= any> {
         }
     }
 
-    private destroy () {
+    private destroy() {
         if (this.serializer) {
             this.serializer.teardown();
         }
     }
 
     private getMessageHandlerKey(type: string | number | typeof Schema): string {
-        switch (typeof(type)) {
+        switch (typeof (type)) {
             // typeof Schema
             case "function": return `$${(type as typeof Schema)._typeid}`;
 

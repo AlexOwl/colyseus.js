@@ -1,14 +1,12 @@
 /// <reference types="node" />
-import NodeWebSocket from "ws";
 import { ClientRequestArgs } from "http";
+import NodeWebSocket from "ws";
 import { ITransport, ITransportEventMap } from "./ITransport";
 export declare class WebSocketTransport implements ITransport {
     events: ITransportEventMap;
     ws: WebSocket | NodeWebSocket;
     protocols?: string | string[];
-    static readonly defaultOptions: {
-        [key: string]: NodeWebSocket.ClientOptions | ClientRequestArgs;
-    };
+    httpOptions: ClientRequestArgs;
     constructor(events: ITransportEventMap);
     send(data: ArrayBuffer | Array<number>): void;
     connect(url: string): void;

@@ -1,3 +1,5 @@
+/// <reference types="node" />
+import { ClientRequestArgs } from "http";
 import { Room, RoomAvailable } from './Room';
 import { SchemaConstructor } from './serializer/SchemaSerializer';
 import { HTTP } from "./HTTP";
@@ -16,6 +18,7 @@ export interface EndpointSettings {
 export declare class Client {
     http: HTTP;
     auth: Auth;
+    httpOptions: ClientRequestArgs;
     protected settings: EndpointSettings;
     constructor(settings?: string | EndpointSettings);
     joinOrCreate<T>(roomName: string, options?: JoinOptions, rootSchema?: SchemaConstructor<T>): Promise<Room<T>>;
