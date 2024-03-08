@@ -2,13 +2,12 @@
 import { WebSocketTransport } from './transport/WebSocketTransport.mjs';
 
 class Connection {
+    httpOptions;
     transport;
     events = {};
-    httpOptions = {};
-    constructor() {
-        const webSocketTransport = new WebSocketTransport(this.events);
-        webSocketTransport.httpOptions = this.httpOptions;
-        this.transport = webSocketTransport;
+    constructor(httpOptions = {}) {
+        this.httpOptions = httpOptions;
+        this.transport = new WebSocketTransport(this.events, this.httpOptions);
     }
     send(data) {
         this.transport.send(data);

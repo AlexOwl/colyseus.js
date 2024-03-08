@@ -31,8 +31,6 @@ export class Room<State = any> {
     public name: string;
     public connection: Connection;
 
-    public httpOptions: ClientRequestArgs = {}
-
     // Public signals
     public onStateChange = createSignal<(state: State) => void>();
     public onError = createSignal<(code: number, message?: string) => void>();
@@ -49,7 +47,7 @@ export class Room<State = any> {
 
     protected onMessageHandlers = createNanoEvents();
 
-    constructor(name: string, rootSchema?: SchemaConstructor<State>) {
+    constructor(name: string, rootSchema?: SchemaConstructor<State>, public httpOptions: ClientRequestArgs = {}) {
         this.roomId = null;
         this.name = name;
 
@@ -71,8 +69,7 @@ export class Room<State = any> {
         devModeCloseCallback?: () => void,
         room: Room = this // when reconnecting on devMode, re-use previous room intance for handling events.
     ) {
-        const connection = new Connection();
-        connection.httpOptions = this.httpOptions;
+        const connection = new Connection(this.httpOptions);
 
         room.connection = connection;
 

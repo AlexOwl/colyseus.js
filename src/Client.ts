@@ -34,11 +34,9 @@ export class Client {
     public http: HTTP;
     public auth: Auth;
 
-    public httpOptions: ClientRequestArgs = {}
-
     protected settings: EndpointSettings;
 
-    constructor(settings: string | EndpointSettings = DEFAULT_ENDPOINT) {
+    constructor(settings: string | EndpointSettings = DEFAULT_ENDPOINT, public httpOptions: ClientRequestArgs = {}) {
         if (typeof (settings) === "string") {
             //
             // endpoint by url
@@ -113,7 +111,9 @@ export class Client {
     public async getAvailableRooms<Metadata = any>(roomName: string = ""): Promise<RoomAvailable<Metadata>[]> {
         return (
             await this.http.get(`matchmake/${roomName}`, {
+                ...(this.httpOptions || {}),
                 headers: {
+                    ...(this.httpOptions?.headers || {}),
                     'Accept': 'application/json'
                 }
             })
@@ -184,7 +184,9 @@ export class Client {
     ) {
         const response = (
             await this.http.post(`matchmake/${method}/${roomName}`, {
+                ...(this.httpOptions || {}),
                 headers: {
+                    ...(this.httpOptions?.headers || {}),
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
@@ -206,9 +208,7 @@ export class Client {
     }
 
     protected createRoom<T>(roomName: string, rootSchema?: SchemaConstructor<T>) {
-        const room = new Room<T>(roomName, rootSchema);
-        room.httpOptions = this.httpOptions;
-        return room;
+        return new Room<T>(roomName, rootSchema, this.httpOptions);
     }
 
     protected buildEndpoint(room: any, options: any = {}) {

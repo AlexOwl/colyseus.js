@@ -12,12 +12,12 @@ export interface RoomAvailable<Metadata = any> {
     metadata?: Metadata;
 }
 export declare class Room<State = any> {
+    httpOptions: ClientRequestArgs;
     roomId: string;
     sessionId: string;
     reconnectionToken: string;
     name: string;
     connection: Connection;
-    httpOptions: ClientRequestArgs;
     onStateChange: {
         once: (cb: (state: State) => void) => void;
         remove: (cb: (state: State) => void) => void;
@@ -55,7 +55,7 @@ export declare class Room<State = any> {
         events: {};
         on(event: string, cb: (...args: any[]) => void): () => void;
     };
-    constructor(name: string, rootSchema?: SchemaConstructor<State>);
+    constructor(name: string, rootSchema?: SchemaConstructor<State>, httpOptions?: ClientRequestArgs);
     get id(): string;
     connect(endpoint: string, devModeCloseCallback?: () => void, room?: Room): void;
     leave(consented?: boolean): Promise<number>;

@@ -11,9 +11,10 @@ var NodeWebSocket__default = /*#__PURE__*/_interopDefaultLegacy(NodeWebSocket);
 
 var WebSocket = NodeWebSocket__default["default"];
 var WebSocketTransport = /** @class */ (function () {
-    function WebSocketTransport(events) {
+    function WebSocketTransport(events, httpOptions) {
+        if (httpOptions === void 0) { httpOptions = {}; }
         this.events = events;
-        this.httpOptions = {};
+        this.httpOptions = httpOptions;
     }
     WebSocketTransport.prototype.send = function (data) {
         if (data instanceof ArrayBuffer) {

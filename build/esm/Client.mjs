@@ -18,11 +18,12 @@ const DEFAULT_ENDPOINT = (typeof (window) !== "undefined" && typeof (window?.loc
     ? `${window.location.protocol.replace("http", "ws")}//${window.location.hostname}${(window.location.port && `:${window.location.port}`)}`
     : "ws://127.0.0.1:2567";
 class Client {
+    httpOptions;
     http;
     auth;
-    httpOptions = {};
     settings;
-    constructor(settings = DEFAULT_ENDPOINT) {
+    constructor(settings = DEFAULT_ENDPOINT, httpOptions = {}) {
+        this.httpOptions = httpOptions;
         if (typeof (settings) === "string") {
             //
             // endpoint by url
@@ -87,7 +88,9 @@ class Client {
     }
     async getAvailableRooms(roomName = "") {
         return (await this.http.get(`matchmake/${roomName}`, {
+            ...(this.httpOptions || {}),
             headers: {
+                ...(this.httpOptions?.headers || {}),
                 'Accept': 'application/json'
             }
         })).data;
@@ -136,7 +139,9 @@ class Client {
     }
     async createMatchMakeRequest(method, roomName, options = {}, rootSchema, reuseRoomInstance) {
         const response = (await this.http.post(`matchmake/${method}/${roomName}`, {
+            ...(this.httpOptions || {}),
             headers: {
+                ...(this.httpOptions?.headers || {}),
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
@@ -153,9 +158,7 @@ class Client {
         return await this.consumeSeatReservation(response, rootSchema, reuseRoomInstance);
     }
     createRoom(roomName, rootSchema) {
-        const room = new Room(roomName, rootSchema);
-        room.httpOptions = this.httpOptions;
-        return room;
+        return new Room(roomName, rootSchema, this.httpOptions);
     }
     buildEndpoint(room, options = {}) {
         const params = [];

@@ -16,11 +16,11 @@ export interface EndpointSettings {
     pathname?: string;
 }
 export declare class Client {
+    httpOptions: ClientRequestArgs;
     http: HTTP;
     auth: Auth;
-    httpOptions: ClientRequestArgs;
     protected settings: EndpointSettings;
-    constructor(settings?: string | EndpointSettings);
+    constructor(settings?: string | EndpointSettings, httpOptions?: ClientRequestArgs);
     joinOrCreate<T>(roomName: string, options?: JoinOptions, rootSchema?: SchemaConstructor<T>): Promise<Room<T>>;
     create<T>(roomName: string, options?: JoinOptions, rootSchema?: SchemaConstructor<T>): Promise<Room<T>>;
     join<T>(roomName: string, options?: JoinOptions, rootSchema?: SchemaConstructor<T>): Promise<Room<T>>;

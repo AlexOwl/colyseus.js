@@ -4,11 +4,12 @@ import NodeWebSocket from 'ws';
 const WebSocket = NodeWebSocket;
 class WebSocketTransport {
     events;
+    httpOptions;
     ws;
     protocols;
-    httpOptions = {};
-    constructor(events) {
+    constructor(events, httpOptions = {}) {
         this.events = events;
+        this.httpOptions = httpOptions;
     }
     send(data) {
         if (data instanceof ArrayBuffer) {

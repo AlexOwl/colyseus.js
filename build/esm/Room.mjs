@@ -9,12 +9,12 @@ import { encode, decode } from '@colyseus/schema';
 import { CloseCode } from './errors/ServerError.mjs';
 
 class Room {
+    httpOptions;
     roomId;
     sessionId;
     reconnectionToken;
     name;
     connection;
-    httpOptions = {};
     // Public signals
     onStateChange = createSignal();
     onError = createSignal();
@@ -26,7 +26,8 @@ class Room {
     // TODO: remove me on 1.0.0
     rootSchema;
     onMessageHandlers = createNanoEvents();
-    constructor(name, rootSchema) {
+    constructor(name, rootSchema, httpOptions = {}) {
+        this.httpOptions = httpOptions;
         this.roomId = null;
         this.name = name;
         if (rootSchema) {
@@ -41,8 +42,7 @@ class Room {
     get id() { return this.roomId; }
     connect(endpoint, devModeCloseCallback, room = this // when reconnecting on devMode, re-use previous room intance for handling events.
     ) {
-        const connection = new Connection();
-        connection.httpOptions = this.httpOptions;
+        const connection = new Connection(this.httpOptions);
         room.connection = connection;
         connection.events.onmessage = Room.prototype.onMessageCallback.bind(room);
         connection.events.onclose = function (e) {

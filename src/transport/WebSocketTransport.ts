@@ -9,9 +9,7 @@ export class WebSocketTransport implements ITransport {
     ws: WebSocket | NodeWebSocket;
     protocols?: string | string[];
 
-    public httpOptions: ClientRequestArgs = {}
-
-    constructor(public events: ITransportEventMap) { }
+    constructor(public events: ITransportEventMap, public httpOptions: ClientRequestArgs = {}) { }
 
     public send(data: ArrayBuffer | Array<number>): void {
         if (data instanceof ArrayBuffer) {

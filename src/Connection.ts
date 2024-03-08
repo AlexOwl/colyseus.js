@@ -7,12 +7,8 @@ export class Connection implements ITransport {
     transport: ITransport;
     events: ITransportEventMap = {};
 
-    public httpOptions: ClientRequestArgs = {}
-
-    constructor() {
-        const webSocketTransport = new WebSocketTransport(this.events);
-        webSocketTransport.httpOptions = this.httpOptions;
-        this.transport = webSocketTransport;
+    constructor(public httpOptions: ClientRequestArgs = {}) {
+        this.transport = new WebSocketTransport(this.events, this.httpOptions);
     }
 
     send(data: ArrayBuffer | Array<number>): void {

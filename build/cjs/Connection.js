@@ -6,12 +6,11 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var WebSocketTransport = require('./transport/WebSocketTransport.js');
 
 var Connection = /** @class */ (function () {
-    function Connection() {
+    function Connection(httpOptions) {
+        if (httpOptions === void 0) { httpOptions = {}; }
+        this.httpOptions = httpOptions;
         this.events = {};
-        this.httpOptions = {};
-        var webSocketTransport = new WebSocketTransport.WebSocketTransport(this.events);
-        webSocketTransport.httpOptions = this.httpOptions;
-        this.transport = webSocketTransport;
+        this.transport = new WebSocketTransport.WebSocketTransport(this.events, this.httpOptions);
     }
     Connection.prototype.send = function (data) {
         this.transport.send(data);

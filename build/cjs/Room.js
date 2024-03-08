@@ -13,9 +13,10 @@ var schema = require('@colyseus/schema');
 var ServerError = require('./errors/ServerError.js');
 
 var Room = /** @class */ (function () {
-    function Room(name, rootSchema) {
+    function Room(name, rootSchema, httpOptions) {
+        if (httpOptions === void 0) { httpOptions = {}; }
         var _this = this;
-        this.httpOptions = {};
+        this.httpOptions = httpOptions;
         // Public signals
         this.onStateChange = signal.createSignal();
         this.onError = signal.createSignal();
@@ -42,8 +43,7 @@ var Room = /** @class */ (function () {
     Room.prototype.connect = function (endpoint, devModeCloseCallback, room // when reconnecting on devMode, re-use previous room intance for handling events.
     ) {
         if (room === void 0) { room = this; }
-        var connection = new Connection.Connection();
-        connection.httpOptions = this.httpOptions;
+        var connection = new Connection.Connection(this.httpOptions);
         room.connection = connection;
         connection.events.onmessage = Room.prototype.onMessageCallback.bind(room);
         connection.events.onclose = function (e) {

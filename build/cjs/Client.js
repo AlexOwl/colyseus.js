@@ -26,9 +26,10 @@ var DEFAULT_ENDPOINT = (typeof (window) !== "undefined" && typeof ((_a = window 
     ? "".concat(window.location.protocol.replace("http", "ws"), "//").concat(window.location.hostname).concat((window.location.port && ":".concat(window.location.port)))
     : "ws://127.0.0.1:2567";
 var Client = /** @class */ (function () {
-    function Client(settings) {
+    function Client(settings, httpOptions) {
         if (settings === void 0) { settings = DEFAULT_ENDPOINT; }
-        this.httpOptions = {};
+        if (httpOptions === void 0) { httpOptions = {}; }
+        this.httpOptions = httpOptions;
         if (typeof (settings) === "string") {
             //
             // endpoint by url
@@ -133,16 +134,13 @@ var Client = /** @class */ (function () {
         });
     };
     Client.prototype.getAvailableRooms = function (roomName) {
+        var _a;
         if (roomName === void 0) { roomName = ""; }
         return tslib.__awaiter(this, void 0, void 0, function () {
-            return tslib.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.http.get("matchmake/".concat(roomName), {
-                            headers: {
-                                'Accept': 'application/json'
-                            }
-                        })];
-                    case 1: return [2 /*return*/, (_a.sent()).data];
+            return tslib.__generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.http.get("matchmake/".concat(roomName), tslib.__assign(tslib.__assign({}, (this.httpOptions || {})), { headers: tslib.__assign(tslib.__assign({}, (((_a = this.httpOptions) === null || _a === void 0 ? void 0 : _a.headers) || {})), { 'Accept': 'application/json' }) }))];
+                    case 1: return [2 /*return*/, (_b.sent()).data];
                 }
             });
         });
@@ -212,20 +210,15 @@ var Client = /** @class */ (function () {
         });
     };
     Client.prototype.createMatchMakeRequest = function (method, roomName, options, rootSchema, reuseRoomInstance) {
+        var _a;
         if (options === void 0) { options = {}; }
         return tslib.__awaiter(this, void 0, void 0, function () {
             var response;
-            return tslib.__generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.http.post("matchmake/".concat(method, "/").concat(roomName), {
-                            headers: {
-                                'Accept': 'application/json',
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(options)
-                        })];
+            return tslib.__generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.http.post("matchmake/".concat(method, "/").concat(roomName), tslib.__assign(tslib.__assign({}, (this.httpOptions || {})), { headers: tslib.__assign(tslib.__assign({}, (((_a = this.httpOptions) === null || _a === void 0 ? void 0 : _a.headers) || {})), { 'Accept': 'application/json', 'Content-Type': 'application/json' }), body: JSON.stringify(options) }))];
                     case 1:
-                        response = (_a.sent()).data;
+                        response = (_b.sent()).data;
                         // FIXME: HTTP class is already handling this as ServerError.
                         if (response.error) {
                             throw new MatchMakeError(response.error, response.code);
@@ -235,15 +228,13 @@ var Client = /** @class */ (function () {
                             response.reconnectionToken = options.reconnectionToken;
                         }
                         return [4 /*yield*/, this.consumeSeatReservation(response, rootSchema, reuseRoomInstance)];
-                    case 2: return [2 /*return*/, _a.sent()];
+                    case 2: return [2 /*return*/, _b.sent()];
                 }
             });
         });
     };
     Client.prototype.createRoom = function (roomName, rootSchema) {
-        var room = new Room.Room(roomName, rootSchema);
-        room.httpOptions = this.httpOptions;
-        return room;
+        return new Room.Room(roomName, rootSchema, this.httpOptions);
     };
     Client.prototype.buildEndpoint = function (room, options) {
         if (options === void 0) { options = {}; }
